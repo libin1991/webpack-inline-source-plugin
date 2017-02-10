@@ -1,0 +1,16 @@
+{
+  "name": "webpack-inline-source-plugin",
+  "version": "0.1.0",
+  "description": "Webpack plugin for injecting JS/CSS inline",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/haohuawu/webpack-inline-source-plugin.git"
+  },
+  "author": "haohuawu <haohuawu@qq.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/haohuawu/webpack-inline-source-plugin/issues"
+  },
+  "homepage": "https://github.com/haohuawu/webpack-inline-source-plugin#readme"
+}
