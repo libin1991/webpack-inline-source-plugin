@@ -35,7 +35,11 @@ function processAsset(asset) {
   return `<script type="text/javascript">${extractSource(asset.path)}</script>`;
 }
 
-function WebpackInlineSourcePlugin(assets) {
+function defaultAssetFilter(/* htmlPluginData, asset */) {
+  return true;
+}
+
+function WebpackInlineSourcePlugin(assets, filter) {
   assert(
     typeOf(assets, 'array') ||
     typeOf(assets, 'object') ||
@@ -43,14 +47,16 @@ function WebpackInlineSourcePlugin(assets) {
     'Should assign a String, Object or Array<String|Object> asset configuration'
   );
   this.assets = normalizeAssets(assets);
+  this.assetFilter = filter || defaultAssetFilter;
 }
 
 WebpackInlineSourcePlugin.prototype.apply = function(compiler) {
   const self = this;
   compiler.plugin('compilation', (compilation) => {
     compilation.plugin('html-webpack-plugin-before-html-processing', (htmlPluginData, callback) => {
-      self.assets.body = self.assets.body.map(processAsset);
-      self.assets.head = self.assets.head.map(processAsset);
+      const assetFilter = self.assetFilter.bind(self, htmlPluginData);
+      self.assets.body = self.assets.body.filter(assetFilter).map(processAsset);
+      self.assets.head = self.assets.head.filter(assetFilter).map(processAsset);
       htmlPluginData.html = htmlPluginData.html.replace(/(<\/head>)/i, (match, head) => self.assets.head.join('\n') + head);
       htmlPluginData.html = htmlPluginData.html.replace(/(<\/body>)/i, (match, body) => self.assets.body.join('\n') + body);
       callback(null, htmlPluginData);
