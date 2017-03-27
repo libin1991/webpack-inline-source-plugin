@@ -55,10 +55,10 @@ WebpackInlineSourcePlugin.prototype.apply = function(compiler) {
   compiler.plugin('compilation', (compilation) => {
     compilation.plugin('html-webpack-plugin-before-html-processing', (htmlPluginData, callback) => {
       const assetFilter = self.assetFilter.bind(self, htmlPluginData);
-      self.assets.body = self.assets.body.filter(assetFilter).map(processAsset);
-      self.assets.head = self.assets.head.filter(assetFilter).map(processAsset);
-      htmlPluginData.html = htmlPluginData.html.replace(/(<\/head>)/i, (match, head) => self.assets.head.join('\n') + head);
-      htmlPluginData.html = htmlPluginData.html.replace(/(<\/body>)/i, (match, body) => self.assets.body.join('\n') + body);
+      const bodyAssets = self.assets.body.filter(assetFilter).map(processAsset);
+      const headAssets = self.assets.head.filter(assetFilter).map(processAsset);
+      htmlPluginData.html = htmlPluginData.html.replace(/(<\/head>)/i, (match, head) => headAssets.join('\n') + head);
+      htmlPluginData.html = htmlPluginData.html.replace(/(<\/body>)/i, (match, body) => bodyAssets.join('\n') + body);
       callback(null, htmlPluginData);
     });
   });
